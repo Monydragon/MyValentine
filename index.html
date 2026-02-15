@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Sloane ❤️</title>
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --bg-color: #fce4ec;
+            --heart-color: #ff4081;
+            --envelope-color: #f8bbd0;
+            --envelope-dark: #f48fb1;
+            --text-color: #880e4f;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        /* Container for the stages */
+        .stage {
+            display: none; /* Hidden by default */
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            box-sizing: border-box;
+            animation: fadeIn 1s ease;
+        }
+
+        .active {
+            display: block;
+        }
+
+        /* --- STAGE 1: THE ENVELOPE --- */
+        .envelope-wrapper {
+            position: relative;
+            cursor: pointer;
+            width: 300px;
+            height: 200px;
+            margin: 0 auto;
+        }
+
+        .envelope {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background-color: var(--envelope-dark);
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        /* Top Flap */
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 150px solid var(--envelope-color); /* The flap color */
+            transform-origin: top;
+            transition: transform 0.6s ease-in-out;
+            z-index: 5;
+        }
+
+        .envelope-wrapper:hover .flap {
+            /* Slight lift on hover */
+            transform: rotateX(20deg); 
+        }
+
+        .envelope-wrapper.open .flap {
+            transform: rotateX(180deg);
+            z-index: 1; /* Move behind the letter when open */
+        }
+
+        /* The Heart Seal */
+        .seal {
+            position: absolute;
+            top: 40px; /* Adjusted to sit on flap */
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 50px;
+            color: var(--heart-color);
+            z-index: 6;
+            transition: opacity 0.4s;
+        }
+        
+        .envelope-wrapper.open .seal {
+            opacity: 0;
+        }
+
+        /* Tap instruction */
+        .hint {
+            margin-top: 50px;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            opacity: 0.7;
+            animation: pulse 2s infinite;
+        }
+
+        /* --- STAGE 2: THE QUESTION --- */
+        .question-box h1 {
+            color: var(--heart-color);
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-yes {
+            background-color: var(--heart-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.1);
+        }
+
+        /* --- STAGE 3: THE STORY --- */
+        .story-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .story-text {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            color: #333;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            background: none;
+            color: var(--heart-color);
+            box-shadow: none;
+            font-size: 2rem;
+            padding: 10px;
+        }
+
+        /* Floating Hearts Animation Background */
+        .bg-hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .heart-particle {
+            position: absolute;
+            color: rgba(255, 64, 129, 0.3);
+            animation: floatUp 10s linear infinite;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes floatUp {
+            from { transform: translateY(100vh) rotate(0deg); }
+            to { transform: translateY(-10vh) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-hearts" id="bgHearts"></div>
+
+    <div id="stage1" class="stage active">
+        <div class="envelope-wrapper" onclick="openEnvelope()">
+            <div class="envelope"></div>
+            <div class="flap"></div>
+            <div class="seal">❤️</div>
+        </div>
+        <div class="hint">Tap the envelope to open</div>
+    </div>
+
+    <div id="stage2" class="stage">
+        <div class="question-box">
+            <h1>Will you be my Valentine?</h1>
+            <div class="btn-group">
+                <button class="btn-yes" onclick="sayYes()">YES!</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="stage3" class="stage">
+        <div class="story-container">
+            <div id="storyText" class="story-text"></div>
+            <div style="margin-top: 20px;">
+                <button class="nav-btn" onclick="nextStory()">→</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURATION: CUSTOMIZE HERE ---
+        // Edit these lines to tell your story!
+        const storyLines = [
+            "I still remember the first time I saw you...",
+            "Every day since then has been an adventure.",
+            "You make me laugh louder than anyone else.",
+            "I love the way you [insert specific detail about Sloane].",
+            "Happy Valentine's Day, Sloane. I love you! ❤️"
+        ];
+
+        let currentLine = 0;
+
+        // --- LOGIC ---
+
+        function openEnvelope() {
+            const wrapper = document.querySelector('.envelope-wrapper');
+            wrapper.classList.add('open');
+            
+            // Wait for animation to finish, then switch stages
+            setTimeout(() => {
+                document.getElementById('stage1').classList.remove('active');
+                document.getElementById('stage2').classList.add('active');
+            }, 1000);
+        }
+
+        function sayYes() {
+            // Trigger confetti or celebration logic here if desired
+            document.getElementById('stage2').classList.remove('active');
+            document.getElementById('stage3').classList.add('active');
+            
+            // Start the story
+            updateStory();
+            createMoreHearts();
+        }
+
+        function updateStory() {
+            const textElem = document.getElementById('storyText');
+            // Add a fade effect
+            textElem.style.opacity = 0;
+            
+            setTimeout(() => {
+                textElem.innerText = storyLines[currentLine];
+                textElem.style.opacity = 1;
+            }, 300);
+        }
+
+        function nextStory() {
+            if (currentLine < storyLines.length - 1) {
+                currentLine++;
+                updateStory();
+            } else {
+                // Loop back or show a final message
+                currentLine = 0; 
+                updateStory(); 
+            }
+        }
+
+        // Background Hearts Generator
+        function createHearts() {
+            const container = document.getElementById('bgHearts');
+            for(let i=0; i<15; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart-particle');
+                heart.innerHTML = '❤';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                heart.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        function createMoreHearts() {
+            const container = document.getElementById('bgHearts');
+            for(let i=0; i<30; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart-particle');
+                heart.innerHTML = '💖';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 30 + 20) + 'px';
+                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        // Initialize background
+        createHearts();
+    </script>
+</body>
+</html>
