@@ -3,327 +3,574 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Sloane ❤️</title>
+    <title>For Sloane &#10084;&#65039;</title>
     <style>
-        /* --- CSS STYLES --- */
         :root {
-            --bg-color: #fce4ec;
-            --heart-color: #ff4081;
-            --envelope-color: #f8bbd0;
-            --envelope-dark: #f48fb1;
-            --text-color: #880e4f;
+            --bg-top: #fff6f8;
+            --bg-mid: #ffe4ec;
+            --bg-bottom: #ffd2df;
+            --heart-color: #f6377b;
+            --envelope-light: #ffd9e6;
+            --envelope-dark: #f59dbd;
+            --text-color: #5c1230;
+            --panel-bg: rgba(255, 255, 255, 0.9);
+            --panel-border: rgba(246, 55, 123, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            padding: 0;
+            min-height: 100dvh;
+            padding: clamp(12px, 3vw, 28px);
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            background-color: var(--bg-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
-            flex-direction: column;
+            overflow-x: hidden;
+            background: linear-gradient(165deg, var(--bg-top) 0%, var(--bg-mid) 45%, var(--bg-bottom) 100%);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
         }
 
-        /* Container for the stages */
+        .app-shell {
+            position: relative;
+            width: min(100%, 820px);
+            z-index: 1;
+        }
+
         .stage {
-            display: none; /* Hidden by default */
-            text-align: center;
+            display: none;
             width: 100%;
-            max-width: 600px;
-            padding: 20px;
-            box-sizing: border-box;
-            animation: fadeIn 1s ease;
+            text-align: center;
+            animation: fadeIn 0.7s ease;
         }
 
-        .active {
+        .stage.active {
             display: block;
         }
 
-        /* --- STAGE 1: THE ENVELOPE --- */
         .envelope-wrapper {
+            --env-w: min(78vw, 340px);
+            --env-h: calc(var(--env-w) * 0.66);
+            width: var(--env-w);
+            height: var(--env-h);
             position: relative;
-            cursor: pointer;
-            width: 300px;
-            height: 200px;
             margin: 0 auto;
+            border: 0;
+            padding: 0;
+            background: transparent;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .envelope {
-            position: relative;
-            width: 300px;
-            height: 200px;
-            background-color: var(--envelope-dark);
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
+            position: absolute;
+            inset: auto 0 0;
+            width: var(--env-w);
+            height: var(--env-h);
+            background: var(--envelope-dark);
+            border-bottom-left-radius: 14px;
+            border-bottom-right-radius: 14px;
+            box-shadow: 0 16px 28px rgba(92, 18, 48, 0.16);
         }
 
-        /* Top Flap */
         .flap {
             position: absolute;
             top: 0;
             left: 0;
             width: 0;
             height: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-top: 150px solid var(--envelope-color); /* The flap color */
+            border-left: calc(var(--env-w) / 2) solid transparent;
+            border-right: calc(var(--env-w) / 2) solid transparent;
+            border-top: calc(var(--env-w) * 0.5) solid var(--envelope-light);
             transform-origin: top;
-            transition: transform 0.6s ease-in-out;
-            z-index: 5;
+            transition: transform 0.65s ease-in-out;
+            z-index: 2;
         }
 
         .envelope-wrapper:hover .flap {
-            /* Slight lift on hover */
-            transform: rotateX(20deg); 
+            transform: rotateX(20deg);
         }
 
         .envelope-wrapper.open .flap {
             transform: rotateX(180deg);
-            z-index: 1; /* Move behind the letter when open */
         }
 
-        /* The Heart Seal */
         .seal {
             position: absolute;
-            top: 40px; /* Adjusted to sit on flap */
+            top: calc(var(--env-h) * 0.17);
             left: 50%;
             transform: translateX(-50%);
-            font-size: 50px;
+            font-size: clamp(34px, 8vw, 56px);
             color: var(--heart-color);
-            z-index: 6;
-            transition: opacity 0.4s;
+            z-index: 3;
+            transition: opacity 0.35s ease;
         }
-        
+
         .envelope-wrapper.open .seal {
             opacity: 0;
         }
 
-        /* Tap instruction */
         .hint {
-            margin-top: 50px;
-            color: var(--text-color);
-            font-size: 1.2rem;
-            opacity: 0.7;
-            animation: pulse 2s infinite;
+            margin-top: 34px;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            opacity: 0.82;
+            animation: pulse 2.2s infinite;
         }
 
-        /* --- STAGE 2: THE QUESTION --- */
+        .question-box {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 24px;
+            padding: clamp(24px, 4vw, 36px);
+            box-shadow: 0 16px 28px rgba(92, 18, 48, 0.12);
+        }
+
         .question-box h1 {
+            margin: 0;
             color: var(--heart-color);
-            font-size: 2.5rem;
-            margin-bottom: 40px;
+            font-size: clamp(1.9rem, 6.5vw, 3rem);
+            line-height: 1.12;
         }
 
         .btn-group {
+            margin-top: 28px;
             display: flex;
             justify-content: center;
-            gap: 20px;
         }
 
         button {
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font: inherit;
         }
 
         .btn-yes {
-            background-color: var(--heart-color);
-            color: white;
-            font-weight: bold;
+            border: 0;
+            border-radius: 999px;
+            padding: 14px 34px;
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
+            font-weight: 700;
+            color: #ffffff;
+            background: linear-gradient(135deg, #f6377b, #ff5b7f);
+            box-shadow: 0 10px 18px rgba(246, 55, 123, 0.3);
+            cursor: pointer;
+            transition: transform 0.2s ease;
         }
 
-        .btn-yes:hover {
-            transform: scale(1.1);
+        .btn-yes:hover,
+        .btn-yes:focus-visible {
+            transform: translateY(-2px) scale(1.03);
         }
 
-        /* --- STAGE 3: THE STORY --- */
         .story-container {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            position: relative;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 24px;
+            padding: clamp(20px, 3vw, 30px);
+            box-shadow: 0 16px 28px rgba(92, 18, 48, 0.12);
+            backdrop-filter: blur(2px);
         }
 
         .story-text {
-            font-size: 1.4rem;
-            line-height: 1.6;
-            color: #333;
-            min-height: 150px;
+            margin: 0;
+            min-height: clamp(136px, 28vh, 188px);
             display: flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
+            font-size: clamp(1.08rem, 2.4vw, 1.5rem);
+            line-height: 1.45;
+            color: #2f1d24;
+            transition: opacity 0.25s ease;
+            padding: 0 4px;
+        }
+
+        .story-meta {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .story-progress {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #7e2045;
+            background: rgba(246, 55, 123, 0.1);
+            padding: 6px 12px;
+            border-radius: 999px;
+        }
+
+        .auto-tag {
+            font-size: 0.9rem;
+            color: #944866;
+        }
+
+        .story-controls {
+            margin-top: 18px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .nav-btn {
-            background: none;
-            color: var(--heart-color);
-            box-shadow: none;
-            font-size: 2rem;
-            padding: 10px;
+            border: 1px solid rgba(246, 55, 123, 0.3);
+            border-radius: 999px;
+            padding: 10px 18px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #8c214b;
+            background: #fff7fa;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
         }
 
-        /* Floating Hearts Animation Background */
+        .nav-btn:hover,
+        .nav-btn:focus-visible {
+            background: #ffe9f1;
+            transform: translateY(-1px);
+        }
+
         .bg-hearts {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed;
+            inset: 0;
             pointer-events: none;
-            z-index: -1;
+            z-index: 0;
             overflow: hidden;
         }
 
         .heart-particle {
             position: absolute;
-            color: rgba(255, 64, 129, 0.3);
-            animation: floatUp 10s linear infinite;
+            color: rgba(246, 55, 123, 0.26);
+            animation: floatUp linear infinite;
+            user-select: none;
         }
 
-        /* Animations */
+        .envelope-wrapper:focus-visible,
+        .btn-yes:focus-visible,
+        .nav-btn:focus-visible {
+            outline: 2px solid rgba(246, 55, 123, 0.45);
+            outline-offset: 3px;
+        }
+
+        @media (max-width: 640px) {
+            .story-container {
+                border-radius: 20px;
+            }
+
+            .story-text {
+                min-height: 152px;
+            }
+        }
+
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+            0% { transform: scale(1); opacity: 0.82; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.82; }
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes floatUp {
-            from { transform: translateY(100vh) rotate(0deg); }
-            to { transform: translateY(-10vh) rotate(360deg); }
+            from { transform: translateY(105vh) rotate(0deg); }
+            to { transform: translateY(-15vh) rotate(360deg); }
         }
     </style>
 </head>
 <body>
+    <div class="bg-hearts" id="bgHearts" aria-hidden="true"></div>
 
-    <div class="bg-hearts" id="bgHearts"></div>
+    <main class="app-shell">
+        <section id="stage1" class="stage active">
+            <button class="envelope-wrapper" type="button" onclick="openEnvelope()" aria-label="Open envelope">
+                <div class="envelope"></div>
+                <div class="flap"></div>
+                <div class="seal">&#10084;&#65039;</div>
+            </button>
+            <p class="hint">Tap the envelope to open</p>
+        </section>
 
-    <div id="stage1" class="stage active">
-        <div class="envelope-wrapper" onclick="openEnvelope()">
-            <div class="envelope"></div>
-            <div class="flap"></div>
-            <div class="seal">❤️</div>
-        </div>
-        <div class="hint">Tap the envelope to open</div>
-    </div>
-
-    <div id="stage2" class="stage">
-        <div class="question-box">
-            <h1>Will you be my Valentine?</h1>
-            <div class="btn-group">
-                <button class="btn-yes" onclick="sayYes()">YES!</button>
+        <section id="stage2" class="stage">
+            <div class="question-box">
+                <h1>Will you be my Valentine?</h1>
+                <div class="btn-group">
+                    <button class="btn-yes" type="button" onclick="sayYes()">YES!</button>
+                </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <div id="stage3" class="stage">
-        <div class="story-container">
-            <div id="storyText" class="story-text"></div>
-            <div style="margin-top: 20px;">
-                <button class="nav-btn" onclick="nextStory()">→</button>
-            </div>
-        </div>
-    </div>
+        <section id="stage3" class="stage">
+            <article class="story-container">
+                <p id="storyText" class="story-text"></p>
+                <div class="story-meta">
+                    <span id="storyProgress" class="story-progress"></span>
+                    <span class="auto-tag">Auto loop every 4s</span>
+                </div>
+                <div class="story-controls">
+                    <button class="nav-btn" type="button" onclick="prevStory()">Prev</button>
+                    <button class="nav-btn" id="autoToggleBtn" type="button" onclick="toggleAutoLoop()">Pause</button>
+                    <button class="nav-btn" type="button" onclick="nextStory(true)">Next</button>
+                </div>
+            </article>
+        </section>
+    </main>
 
     <script>
-        // --- CONFIGURATION: CUSTOMIZE HERE ---
-        // Edit these lines to tell your story!
         const storyLines = [
-            "I still remember the first time I saw you...",
-            "Every day since then has been an adventure.",
-            "You make me laugh louder than anyone else.",
-            "I love the way you [insert specific detail about Sloane].",
-            "Happy Valentine's Day, Sloane. I love you! ❤️"
+            "We met in an ordinary moment, and everything after felt extraordinary.",
+            "Your smile found me before I knew I was looking for home.",
+            "Somehow your laugh became the sound my heart waits for.",
+            "You turned small days into chapters worth remembering.",
+            "We learned each other slowly, like a favorite song.",
+            "Every conversation stitched another thread between us.",
+            "Your kindness made my world feel safer.",
+            "My guard dropped because your love never demanded, only welcomed.",
+            "In your eyes I saw a future I wanted to protect.",
+            "By then, our lives were already gently entwined.",
+            "We built routines that felt like quiet promises.",
+            "Morning texts became tiny anchors in busy days.",
+            "Late-night talks taught me how deeply we could trust.",
+            "You heard what I meant, not just what I said.",
+            "Even silence with you felt full and warm.",
+            "We celebrated little wins like they were fireworks.",
+            "We held each other through losses no one else could see.",
+            "When plans fell apart, we chose each other anyway.",
+            "You reminded me love is a practice, not just a feeling.",
+            "I learned that commitment can be soft and strong at once.",
+            "There were weeks when life pressed hard on both of us.",
+            "Stress stole our energy but never our devotion.",
+            "We apologized quickly and forgave even quicker.",
+            "We kept choosing honesty over comfort.",
+            "You met my fears with patience, never judgment.",
+            "I met your worries with steady hands and open arms.",
+            "Together we turned hard talks into healing.",
+            "We got better at listening than at winning arguments.",
+            "Our love grew roots in the middle of uncertainty.",
+            "What could have broken us became what bonded us.",
+            "We carried each other's burdens without keeping score.",
+            "You stayed when it would have been easier to run.",
+            "I stayed because leaving you never felt like an option.",
+            "When money was tight, we were rich in teamwork.",
+            "When time was short, we made every minute count.",
+            "When hope was thin, we shared the last of it.",
+            "You taught me resilience can look like tenderness.",
+            "I showed you strength can sound like, I'm here.",
+            "We learned to rest, then rise, then try again.",
+            "Step by step, we kept moving forward together.",
+            "Your hand in mine made uncertainty less frightening.",
+            "My shoulder became yours whenever the world felt heavy.",
+            "We made a home in jokes, meals, and borrowed blankets.",
+            "We found joy in grocery aisles and rainy drives.",
+            "Ordinary life with you is my favorite adventure.",
+            "You make hard seasons feel survivable.",
+            "You make good seasons feel brighter.",
+            "You see the best in me and call it forth.",
+            "You love me in ways that make me braver.",
+            "Halfway through this story, I still fall for you daily.",
+            "I love how you notice the details everyone else misses.",
+            "I love how you protect what matters.",
+            "I love how you fight for us with grace.",
+            "I love how you laugh with your whole soul.",
+            "I love how you can calm me with one look.",
+            "I love how you challenge me to grow.",
+            "I love how you celebrate who I already am.",
+            "I love how our differences became our balance.",
+            "I love how our dreams started sharing one horizon.",
+            "I love how forever sounds possible with you.",
+            "We have faced fear, fatigue, and frustration.",
+            "We answered each one with faith, effort, and love.",
+            "We did not avoid storms; we learned to walk through them.",
+            "We did not pretend to be perfect; we stayed real.",
+            "We did not stop at romance; we built partnership.",
+            "You are my peace in chaos and my spark in calm.",
+            "You are my safe place and my wild hope.",
+            "You are my favorite hello and my hardest goodbye.",
+            "You are the person I want beside me in every chapter.",
+            "You are proof that love can be both gentle and fierce.",
+            "Because of you, I trust tomorrow more.",
+            "Because of us, I believe endurance can be beautiful.",
+            "Because we stayed, our love became deeper than easy days.",
+            "Because we tried again, our story kept opening.",
+            "Because we listen, we keep finding each other.",
+            "Because we forgive, we keep choosing each other.",
+            "Because we dream together, the future feels like home.",
+            "Because we persevere, even hardship bows to us.",
+            "Because you are you, my heart rests and races at once.",
+            "Because we are us, nothing feels impossible for long.",
+            "If life asks more of us, we will answer together.",
+            "If new storms come, we will meet them side by side.",
+            "If nights feel long, we will be each other's light.",
+            "If roads get steep, we will climb hand in hand.",
+            "If tears come, we will hold space for them.",
+            "If joy comes, we will multiply it.",
+            "If fear returns, we will speak love louder.",
+            "If doubt whispers, we will remember what we survived.",
+            "If the world shifts, our promise stays steady.",
+            "If everything changes, I still choose you.",
+            "You are my once-in-a-lifetime, every single day.",
+            "You are the love I prayed for and the friend I needed.",
+            "You are the reason my heart feels both calm and alive.",
+            "You are the story I never want to stop telling.",
+            "Thank you for growing with me through every season.",
+            "Thank you for standing with me through every hardship.",
+            "Thank you for believing in us when things felt hard.",
+            "Thank you for making perseverance feel like devotion.",
+            "Today and always, my heart is yours.",
+            "Forever starts again every time I look at you."
         ];
 
+        const STORY_INTERVAL_MS = 4000;
         let currentLine = 0;
+        let storyTimer = null;
+        let autoLoopEnabled = true;
 
-        // --- LOGIC ---
+        const storyTextEl = document.getElementById("storyText");
+        const storyProgressEl = document.getElementById("storyProgress");
+        const autoToggleBtn = document.getElementById("autoToggleBtn");
+
+        function showStage(fromId, toId) {
+            document.getElementById(fromId).classList.remove("active");
+            document.getElementById(toId).classList.add("active");
+        }
 
         function openEnvelope() {
-            const wrapper = document.querySelector('.envelope-wrapper');
-            wrapper.classList.add('open');
-            
-            // Wait for animation to finish, then switch stages
+            const wrapper = document.querySelector(".envelope-wrapper");
+            wrapper.classList.add("open");
+
             setTimeout(() => {
-                document.getElementById('stage1').classList.remove('active');
-                document.getElementById('stage2').classList.add('active');
-            }, 1000);
+                showStage("stage1", "stage2");
+            }, 850);
         }
 
         function sayYes() {
-            // Trigger confetti or celebration logic here if desired
-            document.getElementById('stage2').classList.remove('active');
-            document.getElementById('stage3').classList.add('active');
-            
-            // Start the story
-            updateStory();
+            showStage("stage2", "stage3");
+            currentLine = 0;
+            updateStory(true);
             createMoreHearts();
+            startAutoLoop();
         }
 
-        function updateStory() {
-            const textElem = document.getElementById('storyText');
-            // Add a fade effect
-            textElem.style.opacity = 0;
-            
-            setTimeout(() => {
-                textElem.innerText = storyLines[currentLine];
-                textElem.style.opacity = 1;
-            }, 300);
+        function updateStory(immediate = false) {
+            const renderLine = () => {
+                storyTextEl.textContent = storyLines[currentLine];
+                storyProgressEl.textContent = (currentLine + 1) + " / " + storyLines.length;
+                storyTextEl.style.opacity = "1";
+            };
+
+            if (immediate) {
+                renderLine();
+                return;
+            }
+
+            storyTextEl.style.opacity = "0";
+            setTimeout(renderLine, 150);
         }
 
-        function nextStory() {
-            if (currentLine < storyLines.length - 1) {
-                currentLine++;
-                updateStory();
-            } else {
-                // Loop back or show a final message
-                currentLine = 0; 
-                updateStory(); 
+        function nextStory(resetTimer = false) {
+            currentLine = (currentLine + 1) % storyLines.length;
+            updateStory();
+
+            if (resetTimer && autoLoopEnabled) {
+                startAutoLoop();
             }
         }
 
-        // Background Hearts Generator
+        function prevStory() {
+            currentLine = (currentLine - 1 + storyLines.length) % storyLines.length;
+            updateStory();
+
+            if (autoLoopEnabled) {
+                startAutoLoop();
+            }
+        }
+
+        function startAutoLoop() {
+            if (!autoLoopEnabled) {
+                return;
+            }
+
+            if (storyTimer) {
+                clearInterval(storyTimer);
+            }
+
+            storyTimer = setInterval(() => {
+                nextStory(false);
+            }, STORY_INTERVAL_MS);
+
+            updateAutoToggleLabel();
+        }
+
+        function stopAutoLoop() {
+            if (storyTimer) {
+                clearInterval(storyTimer);
+                storyTimer = null;
+            }
+
+            updateAutoToggleLabel();
+        }
+
+        function toggleAutoLoop() {
+            autoLoopEnabled = !autoLoopEnabled;
+
+            if (autoLoopEnabled) {
+                startAutoLoop();
+            } else {
+                stopAutoLoop();
+            }
+        }
+
+        function updateAutoToggleLabel() {
+            autoToggleBtn.textContent = autoLoopEnabled ? "Pause" : "Play";
+        }
+
         function createHearts() {
-            const container = document.getElementById('bgHearts');
-            for(let i=0; i<15; i++) {
-                const heart = document.createElement('div');
-                heart.classList.add('heart-particle');
-                heart.innerHTML = '❤';
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
-                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
-                heart.style.animationDelay = (Math.random() * 5) + 's';
+            const container = document.getElementById("bgHearts");
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement("div");
+                heart.classList.add("heart-particle");
+                heart.innerHTML = "&#10084;";
+                heart.style.left = Math.random() * 100 + "vw";
+                heart.style.fontSize = Math.random() * 18 + 12 + "px";
+                heart.style.animationDuration = Math.random() * 6 + 7 + "s";
+                heart.style.animationDelay = Math.random() * 6 + "s";
                 container.appendChild(heart);
             }
         }
 
         function createMoreHearts() {
-            const container = document.getElementById('bgHearts');
-            for(let i=0; i<30; i++) {
-                const heart = document.createElement('div');
-                heart.classList.add('heart-particle');
-                heart.innerHTML = '💖';
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.fontSize = (Math.random() * 30 + 20) + 'px';
-                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            const container = document.getElementById("bgHearts");
+            for (let i = 0; i < 28; i++) {
+                const heart = document.createElement("div");
+                heart.classList.add("heart-particle");
+                heart.innerHTML = "&#128150;";
+                heart.style.left = Math.random() * 100 + "vw";
+                heart.style.fontSize = Math.random() * 20 + 18 + "px";
+                heart.style.animationDuration = Math.random() * 3 + 3 + "s";
+                heart.style.animationDelay = Math.random() * 2 + "s";
                 container.appendChild(heart);
             }
         }
 
-        // Initialize background
+        document.addEventListener("visibilitychange", () => {
+            const stage3Active = document.getElementById("stage3").classList.contains("active");
+
+            if (document.hidden) {
+                stopAutoLoop();
+                return;
+            }
+
+            if (stage3Active && autoLoopEnabled) {
+                startAutoLoop();
+            }
+        });
+
         createHearts();
     </script>
 </body>
